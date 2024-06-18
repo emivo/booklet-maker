@@ -4,7 +4,7 @@ You should use the filename `conference_lastname.tex` so that everything works c
 and abstracts are ordered alphabetically using the last name.
 Also, please use the template demonstrated in these folders
 since names and titles are extracted using the `\Large` and `\huge` as indicators of each line.
-So, one should keep the name and title in the same line.
+So, one should keep the name and title on the corresponding lines.
 Moreover, the standalone class is neat so people can compile and view their abstracts,
 and then these are easy to input into the program.
 Note that any newcommands are not inputted from the subfiles.
