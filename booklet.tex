@@ -1,0 +1,122 @@
+%%% AUTHOR: Emil Airta
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[a4paper]{article}
+\usepackage{standalone}
+\usepackage{geometry}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{pdflscape}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{eurosym}
+
+\usepackage{enumerate}
+
+\usepackage{mathrsfs}
+\newcommand{\R}[0]{\mathbb{R}}
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	SCHEDULE GENERAL
+%----------------------------------------------------------------------------------------
+% This page contains hack via pdflscape package to have landscape orientation for the schedule
+% Obvious problem is that normal geometry is turned to sidewise such that left is actually bottom
+% IF you dont't like this feel free to modify
+\thispagestyle{empty}
+\begin{landscape}
+\newgeometry{textwidth= 21 cm, left = 4cm, top = 7.2cm}
+	%\begin{center}
+\hspace{105mm}	\hypertarget{talks}{\textsc{\Huge TITLE}}\\ %% -- Add your TITLE here and modify the hspace
+
+\hspace{105mm}  \textsc{\LARGE Schedule}
+\\
+
+\hspace{113mm}  \textsc{\LARGE DATE} %% --- Add here and mod hspace
+\\
+
+\hspace{113mm} {\LARGE YEAR} %% Add or remove
+	%\end{center}
+
+	%----------------------------------------------------------------------------------------
+	\def\arraystretch{1.8}%
+	\begin{table}[htbp]
+	\large
+	\begin{tabularx}{1.3\textwidth}{| c | X | X | X | X | X |}
+		\hline
+    			       & \textbf{Monday}     & \textbf{Tuesday}	 & \textbf{Wednesday} & \textbf{Thursday} & \textbf{Friday}\\ \hline
+	      	 9.30 -- 10.30 & {Talk 1}            & {Talk 5}		 & {Talk 9}	      &                   &  {Talk 15}     \\ \hline
+		10.30 -- 11.30 & {Talk 2}            & {Talk 6}		 & {Talk 10}  	      &   {Talk 12}       & {Talk 16}       \\ \hline
+		11.30 -- 12.00 & Coffee break        & Coffee break 	 & Coffee break       & Coffee break      & Coffee break   \\ \hline
+		12.00 -- 13.00 & {Talk 3}            & {Talk 7}  	 & {Talk 11}          &  {Talk 13}         &  {Talk 17}      \\ \hline
+		13.00 -- 16.00 & Lunch break 	     & Lunch break       & Lunch break        & Lunch break       &                \\ \hline
+		16.00 -- 17.00 & {Talk 4}  	     & {Talk 8}          &                    & {Talk 14}         &   		   \\ \hline
+		17.00 -- 19.00 &  &\hyperlink{short1}{Parallel sessions}\hypertarget{bS1}{} & & \hyperlink{short2}{Parallel sessions 2} \hypertarget{bS2}{}& \\ \hline
+			       & & & &  &\\ \hline
+		\end{tabularx}
+	\end{table}
+	\normalsize
+	\restoregeometry
+\end{landscape}
+\pagebreak
+%% --------------------------------------------------------------------
+%              BEGINING OF INVITED
+%% -------------------------------------------------------------------
+\section{Invited talks}
+\input{inputs_invited}
+%% --------------------------------------------------------------------
+%              END OF INVITED
+%% -------------------------------------------------------------------
+\pagebreak
+%% ------------------------------------------------------------------
+%              SHORT TALK SCHEDULE
+%% -----------------------------------------------------------------
+\thispagestyle{empty}
+	\begin{center}
+	\textsc{\LARGE Short talks schedule}\\
+	\vspace{0.5cm}
+	\hypertarget{short1}{\textsc{\Large\hyperlink{bS1}{Tuesday }}}\\ %You migth want to insert date here
+	\end{center}
+	\begin{table}[htbp]
+		\centering
+		\begin{tabularx}{\textwidth}{| c | X | X |}
+			\hline
+	     & \textbf{Room 1}     & \textbf{Room 2}\\ \hline
+17.00 -- 17.20    & {STalk 1} & {STalk 2}  \\ \hline
+17.20 -- 17.40     & {STalk 3} & {STalk 4} \\ \hline
+17.40 -- 18.00 &  {STalk 5} & {STalk 6} \\ \hline
+18.00 -- 18.10 & \textbf{Break} & \textbf{Break} \\ \hline
+18.10 -- 18.30 & {STalk 7} & {STalk 8} \\ \hline
+18.30 -- 18.50 & {STalk 9} & {STalk 10}  \\ \hline
+		\end{tabularx}
+		\end{table}
+		\begin{center}
+			\hypertarget{short2}{\textsc{\Large\hyperlink{bS2}{Thursday}}}\\ % AND HERE
+		\end{center}
+		\begin{table}[htbp]
+		\centering
+		\begin{tabularx}{\textwidth}{| c | X | X |}
+			\hline
+	     & \textbf{Room 1}     & \textbf{Room 2} \\ \hline
+17.00 -- 17.20    & {STalk 11} & {STalk 12}  \\ \hline
+17.20 -- 17.40     & {STalk 13}  & {STalk 14} \\ \hline
+17.40 -- 17.50 & \textbf{Break} & \textbf{Break} \\ \hline
+17.50 -- 18.10 &  {STalk 15}& {STalk 16}  \\ \hline
+18.10 -- 18.30 & {STalk 17}  & {STalk 18}  \\ \hline
+		\end{tabularx}
+		
+	\end{table}
+	\pagebreak
+%% --------------------------------------------------------------------
+%              BEGINING OF SHORT
+%% -------------------------------------------------------------------
+\section{Short talks}
+\input{inputs_shorts}
+
+%% --------------------------------------------------------------------
+%              END OF SHORT
+%% -------------------------------------------------------------------
+\end{document}
