@@ -1,61 +1,50 @@
-# This is the template for making a booklet/program for a conference
-Save abstracts to folders `Abstracts_*` and these will be automatically added to the booklet.
-You should use the filename `conference_lastname.tex` so that everything works correctly,
-and abstracts are ordered alphabetically using the last name.
-Also, please use the template demonstrated in these folders
-since names and titles are extracted using the `\Large` and `\huge` as indicators of each line.
-So, one should keep the name and title on the corresponding lines.
-Moreover, the standalone class is neat so people can compile and view their abstracts,
-and then these are easy to input into the program.
-Note that any newcommands are not inputted from the subfiles.
-`\normalsize` command should be kept in the center section
-as this is an indicator for placing the timestamps.
+# Conference Booklet/Program Template
 
-This template does not provide yet any method of automatically making the timetables
-and allocating the given talks as this will be affected by so many factors
-and will need human assistance.
-However, the script will place the times into the abstract files
-if the tables are like in the template file. That is, for normal talks,
-it will take the time from the left-most column
-and the day of the week is extracted from the top row. For the parallel talks,
-the date should be in the center section according to the current format.
-The script updates any changes to the times,
-but if it is not working there is a script to remove timestamps.
+This repository contains a template for generating a booklet or program for a conference. Follow the instructions below to prepare and compile your conference booklet.
 
-The script will also make separate a CSV file for speakers and titles of the talks
-so one can make use of the process script to make certificates using the chosen template they have.
-This script will change {title} and {user} from the given file and compile these files
-using pdflatex. You have to make your template and the one here is only for demonstration purposes.
-You should call `python3 process_csv_certificates.py (participation || talk)`
-since there is also an option of making certificates for participation
-with `input_participation.csv`.
+## Abstract Preparation
 
+1. **Save Abstracts**: Store abstracts in folders named `Abstracts_*`. These abstracts will be automatically included in the booklet.
+2. **File Naming**: Use the filename format `conference_lastname.tex`. This ensures that abstracts are sorted alphabetically by the last name.
+3. **Template Usage**: Follow the template in the provided folders. Extracting names and titles relies on `\Large` for names and `\huge` for titles. Ensure names and titles are on their respective lines.
+4. **Compilation**: Use the standalone class to compile and view abstracts individually. This makes them easy to integrate into the program.
+5. **Commands**: Do not include new commands in the subfiles. Keep the `\normalsize` command in the center section, as it indicates where to place timestamps.
 
+## Timestamps and Timetables
 
-If you modify the tables and add more placeholders for speakers, write `{Talk \d}`
-for a normal talk with any number in place of `\d` and for parallel talks `{STalk \d}`.
-This way new abstracts can be placed there.
+- **Manual Timetable Creation**: The template does not automate timetable creation or talk allocation due to various influencing factors. This requires manual input.
+- **Time Insertion**: If tables follow the template format, the script will insert times into the abstract files. For normal talks, the time is taken from the left-most column and the day from the top row. For parallel talks, the date should be in the center section.
+- **Update Mechanism**: The script updates any changes to the times. If issues arise, use the provided script to remove timestamps.
 
-Notice that the main schedule contains geometry that is not the most brilliant 
-since one needs to make adjustments by hand
+## CSV File for Certificates
+
+The script generates a CSV file listing speakers and titles, which can be used to create certificates.
+
+1. **Certificates**: Use `process_csv_certificates.py` to generate certificates.
+2. **Template Customization**: Customize your certificate template. The provided template is for demonstration purposes.
+3. **Command**: Run `python3 process_csv_certificates.py (participation || talk)` to create certificates. The script can handle both participation and talk certificates with `input_participation.csv`.
+
+## Modifying the Template
+
+- **Placeholder Addition**: Add placeholders for new speakers using `{Talk \d}` for normal talks and `{STalk \d}` for parallel talks.
+- **Schedule Geometry**: Adjust the main schedule manually as the current geometry is basic.
+
 ## Requirements
-- python3
+
+- Python 3
 - pdflatex
 - latexmk
-### Tested on Ubuntu 22.04
-----
-## What would be nice
-- script to make tables
-- user prompt:
-	- make the certificates
-	- allocations of the talks
-- optimization: currently, almost everything is rewritten and only latexmk is helping with runtime. 
 
+### Tested on Ubuntu 22.04
+
+## Future Improvements
+
+- Script for automatic timetable creation
+- User prompts for:
+  - Certificate creation
+  - Talk allocation
+- Optimization: Reduce rewrites and improve runtime efficiency using tools like [TexSoup](https://github.com/alvinwan/TexSoup)
 
 &copy; Emil Airta 2024
 
-
 Improvements and suggestions are welcome.
-
-
- 
