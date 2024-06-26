@@ -2,7 +2,9 @@
 #Author: Emil Airta
 # Import necessary libraries
 import os
+import sys
 import re
+import updateBooklet as booklet_maker
 # Function to get user input for the schedule
 def get_schedule():
     days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -95,19 +97,13 @@ def get_parallel(number_of_sessions):
 # Function to generate LaTeX code for the schedule
 def generate_latex_schedule(time_slots, main_schedule,par_schedule,par_days):
     # Check if we already have a template
-    if os.path.isfile("booklet.tex"):
+    if os.path.isfile("booklet_template.tex"):
         #remove this when finished or add to main
-        print("Do you want to use the existing template? (Yes,No)")
-        answer = input()
-        if answer.lower() in ['y','yes']:
-            # Read the template file and insert in place holders
-            with open("booklet.tex",'r', encoding='utf-8') as file:
-                latex_code = file.read()
-                return replace_timetables(time_slots,main_schedule,par_schedule,par_days,latex_code)
-        else:
-            return template_maker(time_slots,schedule)
+        with open("booklet_template.tex",'r', encoding='utf-8') as file:
+            latex_code = file.read()
+            return replace_timetables(time_slots,main_schedule,par_schedule,par_days,latex_code)
     else:
-        return template_maker(time_slots, schedule)
+        return  None
 
 def replace_timetables(time_slots,main,parallel,par_days,latex_code):
     # find BEGIN{MAIN}
@@ -134,58 +130,57 @@ def replace_timetables(time_slots,main,parallel,par_days,latex_code):
     
     return latex_code
 def make_stables(parallel,days):
-    stables = ""
+    stables = "%-- BEGIN{STABLES}\n"
     for session in parallel.keys():
         #add header
         rooms = len(parallel[session])
 
-        header= make_tabular_header(rooms,session,days[session -1],"STABLES")
+        header= make_tabular_header(rooms,session,days[session -1])
         #new markers
         marker = f"stable{session}"
-        table_conten = table_content_maker(parallel[session].keys(),parallel,marker.upper())
+        table_conten = table_content_maker(parallel[session].keys(),parallel,marker.upper(), session)
         #add end of table
-        end = make_tabular_end("STABLES")
+        end = make_tabular_end()
         #Append to the return variable stables
         stables += header + table_conten + end
+    stables += "%-- END{STABLES}"
     return stables
 
 
-def table_content_maker(time_slots, schedule,latex_markers_for_content): 
+def table_content_maker(time_slots, schedule,latex_markers_for_content, *args): 
     selected_days = schedule.keys()
+    # main -- selected_days, else the session numbers
+    main = len(args) == 0
+    if not main:
+        rooms = len(schedule[args[0]][list(time_slots)[0]]) + 1
+        selected_days = [f"Room {a}" for a in range(1,rooms)]
+    
     code = f"%-- BEGIN{{{latex_markers_for_content}}}\r"
-    #Hack to make main schedule header TODO make uniform for all
-    if len(selected_days) > 0 and type(list(selected_days)[0]) is str:
-        code += "\\begin{tabularx}{1.3\linewidth}{| c |"
-        code += " X |" * len(selected_days)
-        column_headers = " TIME & "
-        column_headers += " & ".join(list(selected_days)) #TODO: textbf
-        code += "}\n" + column_headers + "\n"
+
+    code += "\\begin{tabularx}{\\linewidth}{| c |"
+    code += " X |" * len(selected_days)
+    code +=  "}\n"
+    code += "\n \\hline \\"
+    column_headers = " TIME & "
+    column_headers += " & ".join(selected_days)
+    column_headers += "  \\\\"
+    code +=  column_headers + "\n \\hline \n" 
     for time_slot in time_slots:
         code += f"{time_slot} & "
-        for day in schedule.keys():
-            #day is actually room if parallel session, consider renaming to col
-            activity = schedule[day].get(time_slot, " ")
-            if type(activity) is list:
-                for talk in activity:
-                    code += f"{talk} & "
-            else :
+        if main:
+            for day in schedule.keys():
+                activity = schedule[day].get(time_slot, " ")
                 code += f"{activity} & "
+        else:
+            activity = schedule[args[0]].get(time_slot, " ")
+            for talk in activity:
+                    code += f"{talk} & "
         code = code[:-2] + " \\\\ \n\\hline\n" #first part will strip the last align character
     code += "\\end{tabularx}"
     code += f"%-- END{{{latex_markers_for_content}}}"
     return code 
-# DO NOT REMEMBER WHY THIS FUNCTION IS HERE
-def add_parallel_tables(parallel,schedule):
-    #Find the days
-
-    #Make a table for that day
-
-    # Separate the contents
-    #return
-    pass
-def make_tabular_header(num_col,session_number,day,marker):
-    code = f"%-- BEGIN{{{marker}}}\n"
-    code += r"""\begin{center}"""
+def make_tabular_header(num_col,session_number,day):
+    code = r"""\begin{center}"""
     code += f"\\hypertarget{{short{session_number}}}{{\\textsc{{\\Large\\hyperlink{{bS{session_number}}}{{{day}}}}}}}"
     code += r""" 
 		\end{center}
@@ -193,98 +188,31 @@ def make_tabular_header(num_col,session_number,day,marker):
     code +=  r"""
 	\begin{table}[htbp]
 		\centering
-		\begin{tabularx}{\textwidth}{c| """
-    for i in range(num_col):
-        code += " X |"
-        code += """}
-			\hline
-            """
-    for i in range(num_col):
-        code += f"& \\textbf{{Room {i + 1}}}"
-        code += r"""\\ \hline"""
+        """
+#		\begin{tabularx}{\textwidth}{c| """
+#    for i in range(num_col):
+#        code += " X |"
+#        code += """}
+#			\hline
+#            """
+#    for i in range(num_col):
+#        code += f"& \\textbf{{Room {i + 1}}}"
+#        code += r"""\\ \hline"""
     return code
-def make_tabular_end(marker):
+def make_tabular_end():
     code =  r"""
-    		\end{tabularx}
 		\end{table}
         """
-    code += f"\n%-- END{{{marker}}}\n"
     return code  
-### TODO: THIS IS NOT WORKING YET
-def template_maker(time_slots, schedule):
-    #TODO: modify the weekschedule to coincide with the schedule.keys() lenght
-    #Also TODO: parallel maker not workin
-    column_spec = "l|" + "X|" * len(selected_days)
-    column_headers = " & ".join(selected_days)
-    latex_code = r"""
-%%% AUTHOR: Emil Airta
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
-\documentclass{article}
-\usepackage{tabularx}
-\usepackage{geometry}
-\geometry{a4paper, margin=1in}
-
-\begin{document}
-%----------------------------------------------------------------------------------------
-%	SCHEDULE GENERAL
-%----------------------------------------------------------------------------------------
-\section*{Schedule}
-\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|}
-\hline
-Time & Monday & Tuesday & Wednesday & Thursday & Friday & Saturday & Sunday \\
-\hline
-"""
-    #Add main schedule
-    latex_code += table_content_maker(time_slots,schedule) 
-    #Add parallel schedules
-    latex_code += r"""
-\end{tabularx}
-\pagebreak
-%----------------------------------------------------------------------------------------
-%	SCHEDULE PARALLEL
-%----------------------------------------------------------------------------------------
-\begin{center}
-\textsc{\LARGE Short talks schedule}
-\end{center}
-"""
-    latex_code += make_stables(parallel,latex_code) #CHECK WHAT IS HAPPENING TODO
-#    for session in parallel.keys()
-#        latex_code += make_tabular_header(len(par_schedule.keys()),) 
-#        latex_code += add_parallel_tables(time_slots_short,parallel,days)
-#        latex_code += make_tabular_end() 
-    latex_code += r"""
-
-%% --------------------------------------------------------------------
-%              BEGINING OF INVITED
-%% -------------------------------------------------------------------
-\section{Invited talks}
-\input{inputs_invited}
-%% --------------------------------------------------------------------
-%              END OF INVITED
-%% -------------------------------------------------------------------
-\pagebreak
-%% --------------------------------------------------------------------
-%              BEGINING OF SHORT
-%% -------------------------------------------------------------------
-\section{Short talks}
-\input{inputs_shorts}
-
-%% --------------------------------------------------------------------
-%              END OF SHORT
-%% -------------------------------------------------------------------
-\end{document}
-"""
-    return latex_code
 
 # Main function to run the script
 def main():
     time_slots, main_schedule, par_schedule, par_days = get_schedule()
     latex_code = generate_latex_schedule(time_slots, main_schedule,par_schedule, par_days)
-    
-    #TODO: change here booklet.tex
-    file_path = "weekly_schedule.tex"
+    if latex_code == None:
+        print("Template file is missing")
+        sys.exit(1)
+    file_path = "booklet.tex"
     with open(file_path, "w") as f:
         f.write(latex_code)
     
@@ -293,8 +221,8 @@ def main():
     #flags? TODO
     print("Do you already have some abstracts to add?")
     ans = input()
-#    if ans.lower() in ["y","yes"]:
-        # updatescript1 TODO
+    if ans.lower() in ["y","yes"]:
+        booklet_maker.main()
 
 if __name__ == "__main__":
     main()

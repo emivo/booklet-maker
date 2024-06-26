@@ -39,11 +39,12 @@ The script generates a CSV file listing speakers and titles, which can be used t
 
 ## Future Improvements
 
-- Script for automatic timetable creation
+- Script for automatic timetable creation (already started)
 - User prompts for:
-  - Certificate creation
+  - Certificate creation (added)
   - Talk allocation
 - Optimization: Reduce rewrites and improve runtime efficiency using tools like [TexSoup](https://github.com/alvinwan/TexSoup)
+- Parallel schedules and abstracts to different parts?
 
 &copy; Emil Airta 2024
 
